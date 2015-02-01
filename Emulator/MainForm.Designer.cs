@@ -30,6 +30,7 @@
         {
             this.pnDish = new System.Windows.Forms.Panel();
             this.bnRun = new System.Windows.Forms.Button();
+            this.lbCount = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // pnDish
@@ -51,6 +52,16 @@
             this.bnRun.TabIndex = 1;
             this.bnRun.Text = "Run";
             this.bnRun.UseVisualStyleBackColor = true;
+            this.bnRun.Click += new System.EventHandler(this.bnRun_Click);
+            // 
+            // lbCount
+            // 
+            this.lbCount.AutoSize = true;
+            this.lbCount.Location = new System.Drawing.Point(31, 870);
+            this.lbCount.Name = "lbCount";
+            this.lbCount.Size = new System.Drawing.Size(70, 25);
+            this.lbCount.TabIndex = 2;
+            this.lbCount.Text = "label1";
             // 
             // MainForm
             // 
@@ -58,12 +69,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(825, 1182);
+            this.Controls.Add(this.lbCount);
             this.Controls.Add(this.bnRun);
             this.Controls.Add(this.pnDish);
             this.Name = "MainForm";
             this.Text = "Petrie Dish Emulation";
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -71,6 +84,7 @@
 
         private System.Windows.Forms.Panel pnDish;
         private System.Windows.Forms.Button bnRun;
+        private System.Windows.Forms.Label lbCount;
     }
 }
 
