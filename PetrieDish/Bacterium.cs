@@ -13,7 +13,7 @@ namespace PetrieDish
         public Double Speed { get; private set; }
         public Vector Direction { get; private set; }
         public Int32 Counter { get; private set; }
-        private Random Randomizer { get; set; }
+        private static Random Randomizer { get; set; }
         private Int32 DirectionCounter { get; set; }
         private Dish Parent { get; set; }
         public Boolean IsDead { get { return LifeCounter == 0; } }
@@ -27,12 +27,15 @@ namespace PetrieDish
             Speed = speed;
             Counter = 0;
             Parent = parent;
-            Randomizer = new Random((Int32)DateTime.Now.Millisecond);
-            System.Threading.Thread.Sleep(1);
+
+            if (Randomizer == null)
+                Randomizer = new Random((Int32)DateTime.Now.Millisecond);
+
+            //System.Threading.Thread.Sleep(1);
             Direction = NewDirection();
-            DirectionCounter = Randomizer.Next(10, 40);
-            LifeCounter = Randomizer.Next(20, 25);
-            DivisionCounter = Randomizer.Next(15, 25);
+            DirectionCounter = GetDirectionCounter();
+            LifeCounter = Randomizer.Next(10, 25);
+            DivisionCounter = GetDivisionCounter();
             Generation = 0;
         }
 
@@ -40,33 +43,39 @@ namespace PetrieDish
             : this(parent.CurrentPoint, parent.Speed, parent.Parent)
         { Generation = parent.Generation++; }
 
+        public Int32 GetDivisionCounter() { return Randomizer.Next(5, 15); }
+        public Int32 GetDirectionCounter() { return Randomizer.Next(50, 100); }
+
         public void LifeCicle()
         {
-            if (Parent.Validate(Vector.Add(Direction, CurrentPoint)))
+            for (Int32 i = 0; i < 3; i++)
             {
-                CurrentPoint = Vector.Add(Direction, CurrentPoint);
-                Counter++;
-                DirectionCounter--;
-                LifeCounter--;
-                DivisionCounter--;
-                if (DirectionCounter == 0)
+                if (Parent.Validate(Vector.Add(Direction, CurrentPoint), this))
+                {
+                    CurrentPoint = Vector.Add(Direction, CurrentPoint);
+                    DivisionCounter--;
+
+                    if (DivisionCounter == 0)
+                    {
+                        DivisionCounter = GetDivisionCounter();
+                        Bacterium child = new Bacterium(this);
+                        Parent.AddNewBacterium(child);
+                    }
+                    break;
+                }
+                else
                 {
                     Direction = NewDirection();
-                    DirectionCounter = Randomizer.Next(5, 20);
-                }
-                if (DivisionCounter == 0)
-                {
-                    DivisionCounter = Randomizer.Next(15, 25);
-                    Bacterium child = new Bacterium(this);
-                    Parent.AddNewBacterium(child);
+                    DirectionCounter = GetDirectionCounter();
                 }
             }
-
-            else
+            Counter++;
+            DirectionCounter--;
+            LifeCounter--;
+            if (DirectionCounter == 0)
             {
                 Direction = NewDirection();
-                DirectionCounter = Randomizer.Next(5, 20);
-                LifeCicle();
+                DirectionCounter = GetDirectionCounter();
             }
         }
 

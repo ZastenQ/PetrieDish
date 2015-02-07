@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bacterium.cs" />
+    <Compile Include="Cluster.cs" />
     <Compile Include="Dish.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
