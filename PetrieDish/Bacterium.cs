@@ -15,18 +15,18 @@ namespace PetrieDish
         public Int32 Counter { get; private set; }
         private static Random Randomizer { get; set; }
         private Int32 DirectionCounter { get; set; }
-        private Dish Parent { get; set; }
+        private Dish Dish { get; set; }
         public Boolean IsDead { get { return LifeCounter == 0; } }
         private Int32 LifeCounter { get; set; }
         private Int32 DivisionCounter { get; set; }
         public Int32 Generation { get; private set; }
 
-        public Bacterium(Point currPoint, Double speed, Dish parent)
+        public Bacterium(Point currPoint, Double speed, Dish dish)
         {
             CurrentPoint = currPoint;
             Speed = speed;
             Counter = 0;
-            Parent = parent;
+            Dish = dish;
 
             if (Randomizer == null)
                 Randomizer = new Random((Int32)DateTime.Now.Millisecond);
@@ -34,23 +34,23 @@ namespace PetrieDish
             //System.Threading.Thread.Sleep(1);
             Direction = NewDirection();
             DirectionCounter = GetDirectionCounter();
-            LifeCounter = Randomizer.Next(10, 25);
+            LifeCounter = Randomizer.Next(50, 100);
             DivisionCounter = GetDivisionCounter();
             Generation = 0;
         }
 
         public Bacterium(Bacterium parent)
-            : this(parent.CurrentPoint, parent.Speed, parent.Parent)
+            : this(parent.CurrentPoint, parent.Speed, parent.Dish)
         { Generation = parent.Generation++; }
 
-        public Int32 GetDivisionCounter() { return Randomizer.Next(5, 15); }
+        public Int32 GetDivisionCounter() { return Randomizer.Next(20, 50); }
         public Int32 GetDirectionCounter() { return Randomizer.Next(50, 100); }
 
         public void LifeCicle()
         {
-            for (Int32 i = 0; i < 3; i++)
+            for (Int32 i = 0; i < 10; i++)
             {
-                if (Parent.Validate(Vector.Add(Direction, CurrentPoint), this))
+                if (Dish.Validate(Vector.Add(Direction, CurrentPoint), this))
                 {
                     CurrentPoint = Vector.Add(Direction, CurrentPoint);
                     DivisionCounter--;
@@ -59,7 +59,8 @@ namespace PetrieDish
                     {
                         DivisionCounter = GetDivisionCounter();
                         Bacterium child = new Bacterium(this);
-                        Parent.AddNewBacterium(child);
+                        Dish.AddNewBacterium(child);
+                        
                     }
                     break;
                 }
